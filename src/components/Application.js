@@ -4,7 +4,8 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "components/DayList";
 import Appointment from "components/Appointment";
-import {getAppointmentsForDay} from "components/../helpers/selectors";
+import { getAppointmentsForDay } from "components/../helpers/selectors";
+import { getInterview } from "components/../helpers/selectors";
 
 
 // const appointments = [
@@ -61,28 +62,39 @@ export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
 
   const setDay = day => setState({...state, day});
-  const setDays = days => setState(prev => ({ ...prev, days }));
-  const setAppointments = appointments => setState(prev => ({ ...prev, appointments }));
+  // const setDays = days => setState(prev => ({ ...prev, days }));
+  // const setAppointments = appointments => setState(prev => ({ ...prev, appointments }));
+  // const setInterviewers = (days, appointments, interviewers) => setState(prev => ({ ...prev, interviewers, days, appointments}));
+  const setStateObj = (days, appointments, interviewers) => setState(prev => ({ ...prev, interviewers, days, appointments}));
+
+  // console.log('STATE:', state);
 
   useEffect(() => {
     Promise.all([
       axios('/api/days'),
-      axios('/api/appointments')
+      axios('/api/appointments'),
+      axios('/api/interviewers')
     ])
       .then(res => {
-        setDays(res[0].data);
-        setAppointments(res[1].data);
+        setStateObj(res[0].data, res[1].data, res[2].data);
       })
       .catch(e => console.log(e));
   }, []);
 
   const appointmentElems = getAppointmentsForDay(state, state.day).map(appointment => {
+    const interview = getInterview(state, appointment.interview);
     return (
-      <Appointment key={appointment.id} {...appointment} />
+      <Appointment
+      key={appointment.id}
+      id={appointment.id}
+      time={appointment.time}
+      interview={interview}
+    />
     );
   });
   return (
