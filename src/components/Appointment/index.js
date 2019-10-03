@@ -3,6 +3,7 @@ import React from "react";
 import Header from "components/Appointment/Header"; 
 import Show from "components/Appointment/Show"; 
 import Empty from "components/Appointment/Empty";
+import Form from "components/Appointment/Form";
 import useVisualMode from "components/../hooks/useVisualMode";
 
 import "components/Appointment/styles.scss";
@@ -20,6 +21,10 @@ export default function Appointment(props) {
     transition(CREATE);
   }
 
+  function onCancel() {
+    back();
+  }
+
   return (
     <article className="appointment">
       <Header time={props.time} />
@@ -30,6 +35,7 @@ export default function Appointment(props) {
           interviewer={props.interview.interviewer}
         />
       )}
+      {mode === CREATE && <Form interviewers={[]} onCancel={onCancel}/>}
     </article>
   );
 }
