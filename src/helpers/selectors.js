@@ -18,6 +18,31 @@ export function getAppointmentsForDay(state, day) {
   return output;
 }
 
+
+/**
+ * Returns array of objects with interviewer details
+ * @param {object} state 
+ * @param {string} day 
+ * @return {array}
+ */
+export function getInterviewersForDay(state, day) {
+  const dayObj = state.days.find(elem => elem.name === day);
+  const output = [];
+  if (!dayObj) return [];
+  // console.log('\ndayObj:', dayObj);
+  
+  const interviewers = dayObj.interviewers;
+  // console.log('\ninterviewers:', interviewers);
+  interviewers.map(interviewer => {
+    if (state.interviewers[interviewer]) {
+      output.push(state.interviewers[interviewer]);
+    }
+  });
+  // console.log('\noutput:', interviewers);
+  return output;
+}
+
+
 /**
  * @param {object} state 
  * @param {object} interview
