@@ -28,10 +28,10 @@ export default function Application(props) {
       [id]: appointment
     };
 
-    setState({
-      ...state,
-      appointments
-    });
+    /* save to db */
+    return axios.put(`/api/appointments/${id}`, appointment)
+      .then(setState({ ...state, appointments }))
+      .catch(e => console.log(e));
   }
 
   const setDay = day => setState({...state, day});
