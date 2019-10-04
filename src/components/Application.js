@@ -29,11 +29,10 @@ export default function Application(props) {
       [id]: appointment
     };
 
-    console.log(id, interview);
     /* save to db */
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => setState({ ...state, appointments }))
-      // .catch(e => console.log(e));
+      .catch(e => console.log(e));
   }
 
   // input: 
@@ -51,7 +50,7 @@ export default function Application(props) {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => setState({...state, appointments}))
-      // .catch(e => console.log(e));
+      .catch(e => console.log(e));
   }
 
   const setDay = day => setState({...state, day});
