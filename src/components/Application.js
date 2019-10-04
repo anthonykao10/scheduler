@@ -38,8 +38,18 @@ export default function Application(props) {
   // input: 
   // - id: appointment id
   function cancelInterview(id) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => setState({...state}))
+      .then(() => setState({...state, appointments}))
       .catch(e => console.log(e));
   }
 
