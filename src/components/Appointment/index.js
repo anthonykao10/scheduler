@@ -1,7 +1,7 @@
 import React from "react";
 
 import Header from "components/Appointment/Header"; 
-import Show from "components/Appointment/Show"; 
+import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
 import Status from "components/Appointment/Status";
@@ -19,6 +19,7 @@ const CONFIRM = "CONFIRM";
 const EDIT = "EDIT";
 const SAVING_MESSAGE = 'Saving';
 const DELETING_MESSAGE = 'Deleting';
+const CONFIRM_DELETE_MESSAGE = 'Are you sure you want to delete?';
 
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -56,8 +57,8 @@ export default function Appointment(props) {
       {mode === DELETING && <Status message={DELETING_MESSAGE}/>}
       {mode === SHOW && (
         <Show
-          student={props.interview.student}
-          interviewer={props.interview.interviewer}
+          student={props.interview && props.interview.student}
+          interviewer={props.interview && props.interview.interviewer}
           onDelete={() => transition(CONFIRM)}
           onEdit={() => transition(EDIT)}
         />
@@ -80,7 +81,7 @@ export default function Appointment(props) {
       )}
       {mode === CONFIRM && (
         <Confirm 
-          message={'Are you sure you want to delete?'} 
+          message={CONFIRM_DELETE_MESSAGE} 
           onConfirm={onDelete}
           onCancel={onCancel}
         />
