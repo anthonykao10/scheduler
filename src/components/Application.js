@@ -87,6 +87,8 @@ export default function Application(props) {
               const interview = getInterview(state, appointment.interview);
               return (
                 <Appointment
+                student={appointment.interview && appointment.interview.student }
+                interviewer={appointment.interview && appointment.interview.interviewer}
                 key={appointment.id}
                 id={appointment.id}
                 time={appointment.time}
