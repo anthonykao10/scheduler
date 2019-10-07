@@ -10,7 +10,7 @@ export function getAppointmentsForDay(state, day) {
   if (!dayObj) return [];
 
   const appointments = dayObj.appointments;
-  appointments.map(appointment => {
+  appointments.forEach(appointment => {
     if (state.appointments[appointment]) {
       output.push(state.appointments[appointment]);
     }
@@ -31,7 +31,7 @@ export function getInterviewersForDay(state, day) {
   if (!dayObj) return [];
   
   const interviewers = dayObj.interviewers;
-  interviewers.map(interviewer => {
+  interviewers.forEach(interviewer => {
     if (state.interviewers[interviewer]) {
       output.push(state.interviewers[interviewer]);
     }
