@@ -2,6 +2,8 @@ import { useEffect, useReducer } from "react";
 import axios from "axios";
 
 const SET_DAY = "SET_DAY";
+const MINUS_SPOTS = "MINUS_SPOTS";
+const ADD_SPOTS = "ADD_SPOTS";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
 
@@ -21,8 +23,27 @@ function reducer(state, action) {
         interviewers: action.interviewers 
       }
     case SET_INTERVIEW: {
-      return { ...state, 
+      return { 
+        ...state, 
         appointments: action.appointments 
+      }
+    }   
+    case MINUS_SPOTS: {
+      const newDays = [...action.days];
+      const dayObj = newDays.find(dayObj => dayObj.name === action.day);
+      newDays[dayObj.id - 1].spots--;
+      return {
+        ...state,
+        days: newDays
+      }
+    }
+    case ADD_SPOTS: {
+      const newDays = [...action.days];
+      const dayObj = newDays.find(dayObj => dayObj.name === action.day);
+      newDays[dayObj.id - 1].spots++;
+      return {
+        ...state,
+        days: newDays
       }
     }
     default:
@@ -57,7 +78,10 @@ export default function useApplicationData() {
     };
 
     return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => dispatch({ type: SET_INTERVIEW, appointments }))
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, appointments });
+        dispatch({ type: MINUS_SPOTS, day: state.day, days: state.days })
+      })
       .catch(e => console.log(e));
   }
 
@@ -75,7 +99,10 @@ export default function useApplicationData() {
     };
 
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, appointments }))
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, appointments });
+        dispatch({ type: ADD_SPOTS, day: state.day, days: state.days })
+      })
       .catch(e => console.log(e));
   }
 
