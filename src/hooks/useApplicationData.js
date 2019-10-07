@@ -114,9 +114,9 @@ export default function useApplicationData() {
 
   useEffect(() => {
     Promise.all([
-      axios('/api/days'),
-      axios('/api/appointments'),
-      axios('/api/interviewers')
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers')
     ])
       .then(res => {
         setStateObj(res[0].data, res[1].data, res[2].data);
