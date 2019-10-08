@@ -10,7 +10,8 @@ import {
   getAllByTestId,
   getByPlaceholderText,
   getByAltText,
-  queryByText
+  queryByText,
+  queryByAltText
 } from "@testing-library/react";
 
 import Application from "components/Application";
@@ -28,7 +29,7 @@ describe("Application", () => {
       });
   });
 
-  
+
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
     const { container, debug } = render(<Application />);
 
@@ -69,17 +70,17 @@ describe("Application", () => {
 
     await waitForElement(() => getByText(container, "Archie Cohen"));
   
-    const appointments = getAllByTestId(container, "appointment");
-
     // Select booked appointment
-    const appointment = appointments[1];
+    const appointment = getAllByTestId(container, "appointment").find(
+      appointment => queryByText(appointment, "Archie Cohen")
+    );
 
-    fireEvent.click(getByAltText(appointment, "Delete"));
+    fireEvent.click(queryByAltText(appointment, "Delete"));
     
     // Check that the confirmation message is shown.
     expect(getByText(appointment, "Are you sure you want to delete?")).toBeInTheDocument();
     
-    fireEvent.click(getByText(appointment, "Confirm"));
+    fireEvent.click(queryByText(appointment, "Confirm"));
 
     // Check that the element with the text "Deleting" is displayed.
     expect(getByText(appointment, "Deleting")).toBeInTheDocument();
