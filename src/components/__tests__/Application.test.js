@@ -9,7 +9,8 @@ import {
   getByText, 
   getAllByTestId,
   getByPlaceholderText,
-  getByAltText
+  getByAltText,
+  queryByText
 } from "@testing-library/react";
 
 import Application from "components/Application";
@@ -28,7 +29,7 @@ describe("Application", () => {
   });
 
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
-    const { container } = render(<Application />);
+    const { container, debug } = render(<Application />);
 
     await waitForElement(() => getByText(container, "Archie Cohen"));
 
@@ -45,7 +46,19 @@ describe("Application", () => {
     fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
 
     fireEvent.click(getByText(appointment, "Save"));
-  
-    console.log(prettyDOM(appointment));
+
+    // Check for "Status" component
+    expect(getByText(appointment, "Saving")).toBeInTheDocument();
+
+    // Check for student name, after "Saving" indicator is hidden
+    await waitForElement(() => queryByText(appointment, "Lydia Miller-Jones"));
+
+    // Find specific "day node" for "Monday"
+    const day = getAllByTestId(container, "day").find(day =>
+      queryByText(day, "Monday")
+    );
+    
+    // Check for "no spots remaining" text
+    expect(getByText(day, "no spots remaining")).toBeInTheDocument();
   });
 });
