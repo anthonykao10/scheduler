@@ -2,8 +2,7 @@ import { useEffect, useReducer } from "react";
 import axios from "axios";
 
 const SET_DAY = "SET_DAY";
-const MINUS_SPOTS = "MINUS_SPOTS";
-const ADD_SPOTS = "ADD_SPOTS";
+const UPDATE_SPOTS = "UPDATE_SPOTS";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
 
@@ -27,20 +26,20 @@ function reducer(state, action) {
         ...state, 
         appointments: action.appointments 
       }
-    }   
-    case MINUS_SPOTS: {
-      const newDays = [...action.days];
-      const dayObj = newDays.find(dayObj => dayObj.name === action.day);
-      newDays[dayObj.id - 1].spots--;
-      return {
-        ...state,
-        days: newDays
-      }
     }
-    case ADD_SPOTS: {
+    case UPDATE_SPOTS: {
       const newDays = [...action.days];
       const dayObj = newDays.find(dayObj => dayObj.name === action.day);
-      newDays[dayObj.id - 1].spots++;
+
+      // Get spots for day
+      let spots = 0;
+      dayObj.appointments.forEach(appointmentId => {
+        // Increment spots if interview obj exists for that appointment
+        if (!state.appointments[appointmentId].interview) spots++;
+      });
+      // Update spots
+      newDays[dayObj.id - 1].spots = spots;
+      
       return {
         ...state,
         days: newDays
@@ -80,7 +79,7 @@ export default function useApplicationData() {
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
-        dispatch({ type: MINUS_SPOTS, day: state.day, days: state.days })
+        dispatch({ type: UPDATE_SPOTS, day: state.day, days: state.days, appointments: state.appointments});
       })
       .catch(e => console.log(e));
   }
@@ -101,7 +100,7 @@ export default function useApplicationData() {
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
-        dispatch({ type: ADD_SPOTS, day: state.day, days: state.days })
+        dispatch({ type: UPDATE_SPOTS, day: state.day, days: state.days, appointments: state.appointments});
       })
       .catch(e => console.log(e));
   }
