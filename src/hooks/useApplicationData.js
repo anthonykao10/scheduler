@@ -80,8 +80,7 @@ export default function useApplicationData() {
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
         dispatch({ type: UPDATE_SPOTS, day: state.day, days: state.days, appointments: state.appointments});
-      })
-      .catch(e => console.log(e));
+      });
   }
 
   // input: 
@@ -101,8 +100,7 @@ export default function useApplicationData() {
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
         dispatch({ type: UPDATE_SPOTS, day: state.day, days: state.days, appointments: state.appointments});
-      })
-      .catch(e => console.log(e));
+      });
   }
 
   const setDay = day => dispatch({ type: SET_DAY, day });
