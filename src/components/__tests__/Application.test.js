@@ -28,6 +28,7 @@ describe("Application", () => {
       });
   });
 
+  
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
     const { container, debug } = render(<Application />);
 
@@ -60,5 +61,38 @@ describe("Application", () => {
     
     // Check for "no spots remaining" text
     expect(getByText(day, "no spots remaining")).toBeInTheDocument();
+  });
+  
+
+  it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
+    const { container, debug } = render(<Application />);
+
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    const appointments = getAllByTestId(container, "appointment");
+
+    // Select booked appointment
+    const appointment = appointments[1];
+
+    fireEvent.click(getByAltText(appointment, "Delete"));
+    
+    // Check that the confirmation message is shown.
+    expect(getByText(appointment, "Are you sure you want to delete?")).toBeInTheDocument();
+    
+    fireEvent.click(getByText(appointment, "Confirm"));
+
+    // Check that the element with the text "Deleting" is displayed.
+    expect(getByText(appointment, "Deleting")).toBeInTheDocument();
+
+    // Wait until the element with the "Add" button is displayed.
+    await waitForElement(() => getByAltText(appointment, "Add"));
+
+    // Find specific "day node" for "Monday"
+    const day = getAllByTestId(container, "day").find(day =>
+      queryByText(day, "Monday")
+    );
+
+    // Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
+    expect(getByText(day, "2 spots remaining")).toBeInTheDocument();
   });
 });
